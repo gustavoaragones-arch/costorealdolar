@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { buildPageMetadata } from "@/constants/metadata";
 
-const title = "Disclaimer — Aviso legal";
+const title = "Aviso legal";
 
 export const metadata: Metadata = buildPageMetadata({
   title,
@@ -23,7 +23,7 @@ export default function DisclaimerPage() {
 
       <header className="mt-6 space-y-3">
         <h1 className="text-3xl font-bold tracking-tight text-zinc-900">
-          Disclaimer
+          Aviso legal
         </h1>
         <p className="text-lg leading-relaxed text-zinc-700">
           Leé este aviso antes de usar la calculadora o las páginas de productos.

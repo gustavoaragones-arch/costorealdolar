@@ -8,7 +8,7 @@ import { SITE_URL } from "@/constants/site";
  * 1.0 — Homepage (primary entry)
  * 0.8 — Product landing pages (programmatic SEO)
  * 0.7 — Metodología (E-E-A-T / AEO authority)
- * 0.3 — Legal & trust (Disclaimer, Privacidad)
+ * 0.3 — Legal & trust (Aviso legal, Privacidad)
  */
 export default function sitemap(): MetadataRoute.Sitemap {
   const lastModified = new Date(taxRules.updatedAt);

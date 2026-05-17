@@ -4,7 +4,7 @@ import { CONTACT_EMAIL } from "@/constants/site";
 const FOOTER_LINKS = [
   { href: "/", label: "Inicio" },
   { href: "/metodologia", label: "Metodología" },
-  { href: "/disclaimer", label: "Disclaimer" },
+  { href: "/disclaimer", label: "Aviso legal" },
   { href: "/privacidad", label: "Privacidad" },
 ] as const;
 

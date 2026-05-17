@@ -168,7 +168,7 @@ export default function PrivacidadPage() {
               href="/disclaimer"
               className="font-medium text-zinc-900 underline"
             >
-              Disclaimer
+              Aviso legal
             </Link>{" "}
             y la{" "}
             <Link
