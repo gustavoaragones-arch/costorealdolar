@@ -1,6 +1,12 @@
 import { faqData } from "@/constants/faqData";
-
 import { SITE_URL } from "@/constants/site";
+
+type JsonLdNode = Record<string, unknown> & { "@context"?: string };
+
+export function stripContext<T extends JsonLdNode>(node: T): Omit<T, "@context"> {
+  const { "@context": _, ...rest } = node;
+  return rest;
+}
 
 export const softwareApplicationSchema = {
   "@context": "https://schema.org",
@@ -10,7 +16,7 @@ export const softwareApplicationSchema = {
   operatingSystem: "Web",
   browserRequirements: "Requires JavaScript",
   description:
-    "Calculadora gratuita del costo real en pesos de comprar dólares, suscripciones y compras en el exterior en Argentina. Incluye Impuesto PAIS, percepciones y comparación entre dólar tarjeta, MEP y blue.",
+    "Calculadora gratuita del costo real en pesos de comprar dólares, suscripciones y compras en el exterior en Argentina. 0% Impuesto PAIS desde 2026; 30% Percepciones en dólar tarjeta; comparación MEP y blue.",
   url: SITE_URL,
   inLanguage: "es-AR",
   offers: {
@@ -20,9 +26,9 @@ export const softwareApplicationSchema = {
     availability: "https://schema.org/InStock",
   },
   featureList: [
-    "Calculadora dólar tarjeta con impuestos",
+    "Calculadora dólar tarjeta con 0% Impuesto PAIS y 30% Percepciones",
     "Comparación dólar MEP vs tarjeta",
-    "Desglose Impuesto PAIS y percepciones",
+    "Desglose 0% Impuesto PAIS y 30% Percepciones en el recibo",
     "Cálculo en tiempo real sin registro",
   ],
 } as const;
@@ -45,7 +51,10 @@ export function buildFaqPageSchema() {
 export function buildJsonLdGraph() {
   return {
     "@context": "https://schema.org",
-    "@graph": [softwareApplicationSchema, buildFaqPageSchema()],
+    "@graph": [
+      stripContext(softwareApplicationSchema),
+      stripContext(buildFaqPageSchema()),
+    ],
   };
 }
 
@@ -61,7 +70,7 @@ export function buildProductSchema(
     name: product.name,
     description: product.anxietyNote,
     url: productUrl,
-    category: "FinancialCalculatorResult",
+    category: "Calculadora financiera",
     offers: [
       {
         "@type": "Offer",
@@ -70,7 +79,7 @@ export function buildProductSchema(
         priceCurrency: "ARS",
         priceValidUntil: "2026-12-31",
         url: productUrl,
-        description: `Costo estimado en ARS pagando con dólar tarjeta (USD ${product.basePriceUSD}).`,
+        description: `Costo estimado en ARS con dólar tarjeta (0% Impuesto PAIS, 30% Percepciones). USD ${product.basePriceUSD}.`,
       },
       {
         "@type": "Offer",
@@ -79,7 +88,7 @@ export function buildProductSchema(
         priceCurrency: "ARS",
         priceValidUntil: "2026-12-31",
         url: productUrl,
-        description: `Costo estimado en ARS pagando con dólar MEP (USD ${product.basePriceUSD}).`,
+        description: `Costo estimado en ARS con dólar MEP (USD ${product.basePriceUSD}).`,
       },
     ],
   };

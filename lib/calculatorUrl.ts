@@ -14,12 +14,26 @@ const EXCHANGE_TYPES: ExchangeType[] = [
   "tarjeta",
 ];
 
+export type CalculatorUrlParams = {
+  amt?: string;
+  pt?: string;
+  et?: string;
+};
+
 function isPurchaseType(value: string | null): value is PurchaseType {
   return value != null && PURCHASE_TYPES.includes(value as PurchaseType);
 }
 
 function isExchangeType(value: string | null): value is ExchangeType {
   return value != null && EXCHANGE_TYPES.includes(value as ExchangeType);
+}
+
+export function toUrlSearchParams(params?: CalculatorUrlParams): URLSearchParams {
+  const searchParams = new URLSearchParams();
+  if (params?.amt) searchParams.set("amt", params.amt);
+  if (params?.pt) searchParams.set("pt", params.pt);
+  if (params?.et) searchParams.set("et", params.et);
+  return searchParams;
 }
 
 export function parseCalculatorSearchParams(
@@ -40,6 +54,17 @@ export function parseCalculatorSearchParams(
     purchaseType: isPurchaseType(urlPt) ? urlPt : defaults.purchaseType,
     exchangeType: isExchangeType(urlEt) ? urlEt : defaults.exchangeType,
   };
+}
+
+export function parseCalculatorUrlParams(
+  urlParams: CalculatorUrlParams | undefined,
+  defaults: {
+    amount: string;
+    purchaseType: PurchaseType;
+    exchangeType: ExchangeType;
+  },
+) {
+  return parseCalculatorSearchParams(toUrlSearchParams(urlParams), defaults);
 }
 
 export function buildCalculatorQueryString(

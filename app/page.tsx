@@ -5,6 +5,7 @@ import { InfoBanner } from "@/components/InfoBanner";
 import { JsonLd } from "@/components/JsonLd";
 import { ProductLinks } from "@/components/ProductLinks";
 import { buildPageMetadata } from "@/constants/metadata";
+import type { CalculatorUrlParams } from "@/lib/calculatorUrl";
 
 const PAGE_TITLE =
   "Calculadora Dólar Tarjeta, MEP y Blue - Costo Real con Impuestos";
@@ -26,7 +27,13 @@ export const metadata: Metadata = {
   ],
 };
 
-export default function Home() {
+type HomeProps = {
+  searchParams: Promise<CalculatorUrlParams>;
+};
+
+export default async function Home({ searchParams }: HomeProps) {
+  const urlParams = await searchParams;
+
   return (
     <>
       <JsonLd />
@@ -45,7 +52,11 @@ export default function Home() {
           <InfoBanner />
 
           <div className="mt-8">
-            <DollarCalculator />
+            <DollarCalculator
+              initialAmountFromUrl={urlParams.amt}
+              initialPurchaseTypeFromUrl={urlParams.pt}
+              initialExchangeTypeFromUrl={urlParams.et}
+            />
           </div>
 
           <FaqSection />

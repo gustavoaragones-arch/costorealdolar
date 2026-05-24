@@ -11,9 +11,12 @@ import {
   getAllProductSlugs,
   getProductBySlug,
 } from "@/constants/products";
+import { buildProductComparison } from "@/lib/productComparison";
+import type { CalculatorUrlParams } from "@/lib/calculatorUrl";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<CalculatorUrlParams>;
 };
 
 export function generateStaticParams() {
@@ -37,6 +40,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       description: product.metaDescription,
       canonicalPath,
     }),
+    robots: { index: true, follow: true },
     keywords: [
       `cuanto cuesta ${product.name.toLowerCase()} argentina`,
       `${product.name.toLowerCase()} dolar tarjeta`,
@@ -46,8 +50,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-export default async function ProductPage({ params }: PageProps) {
+export default async function ProductPage({ params, searchParams }: PageProps) {
   const { slug } = await params;
+  const urlParams = await searchParams;
   const product = getProductBySlug(slug);
 
   if (!product) {
@@ -55,6 +60,7 @@ export default async function ProductPage({ params }: PageProps) {
   }
 
   const pageTitle = `¿Cuánto cuesta ${product.name} en Argentina? (Costo Real 2026)`;
+  const comparison = buildProductComparison(product);
 
   return (
     <>
@@ -80,13 +86,16 @@ export default async function ProductPage({ params }: PageProps) {
           <InfoBanner />
 
           <div className="mt-8 space-y-8">
-            <ProductComparison product={product} />
+            <ProductComparison product={product} comparison={comparison} />
 
             <DollarCalculator
               initialAmount={product.basePriceUSD}
               initialPurchaseType={product.purchaseType}
               initialExchangeType="tarjeta"
               documentTitleBase={pageTitle}
+              initialAmountFromUrl={urlParams.amt}
+              initialPurchaseTypeFromUrl={urlParams.pt}
+              initialExchangeTypeFromUrl={urlParams.et}
             />
           </div>
 

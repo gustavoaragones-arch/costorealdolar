@@ -1,29 +1,15 @@
-import { calculateDollarCost } from "@/logic/calculateDollarCost";
 import { formatARS, formatUSD } from "@/lib/format";
+import type { ProductComparisonData } from "@/lib/productComparison";
 import type { Product } from "@/constants/products";
 
 interface ProductComparisonProps {
   product: Product;
+  comparison: ProductComparisonData;
 }
 
-export function ProductComparison({ product }: ProductComparisonProps) {
-  const { basePriceUSD, purchaseType } = product;
-
-  const tarjeta = calculateDollarCost({
-    usdAmount: basePriceUSD,
-    purchaseType,
-    exchangeType: "tarjeta",
-  });
-
-  const mep = calculateDollarCost({
-    usdAmount: basePriceUSD,
-    purchaseType,
-    exchangeType: "mep",
-  });
-
-  const savings = tarjeta.totalCost - mep.totalCost;
-  const savingsPercent =
-    tarjeta.totalCost > 0 ? (savings / tarjeta.totalCost) * 100 : 0;
+export function ProductComparison({ product, comparison }: ProductComparisonProps) {
+  const { basePriceUSD, name } = product;
+  const { tarjetaTotal, mepTotal, savings, savingsPercent } = comparison;
 
   return (
     <section
@@ -40,12 +26,16 @@ export function ProductComparison({ product }: ProductComparisonProps) {
         <table className="w-full min-w-[320px] text-left text-sm">
           <caption className="sr-only">
             Comparación de costo en pesos: dólar tarjeta versus dólar MEP para{" "}
-            {product.name}
+            {name}
           </caption>
           <thead>
             <tr className="border-b border-zinc-100 text-xs uppercase tracking-wide text-zinc-500">
-              <th className="px-5 py-3 font-semibold">Modo</th>
-              <th className="px-5 py-3 font-semibold text-right">Costo en ARS</th>
+              <th className="px-5 py-3 font-semibold" scope="col">
+                Modo
+              </th>
+              <th className="px-5 py-3 font-semibold text-right" scope="col">
+                Costo en ARS
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -59,7 +49,7 @@ export function ProductComparison({ product }: ProductComparisonProps) {
                 </span>
               </td>
               <td className="px-5 py-4 text-right font-mono text-lg font-bold tabular-nums text-red-900">
-                {formatARS(tarjeta.totalCost)}
+                {formatARS(tarjetaTotal)}
               </td>
             </tr>
             <tr className="border-b border-zinc-50 bg-emerald-50/50 ring-1 ring-inset ring-emerald-200/80">
@@ -77,7 +67,7 @@ export function ProductComparison({ product }: ProductComparisonProps) {
                 </span>
               </td>
               <td className="px-5 py-4 text-right font-mono text-lg font-bold tabular-nums text-emerald-900">
-                {formatARS(mep.totalCost)}
+                {formatARS(mepTotal)}
               </td>
             </tr>
             <tr className="bg-zinc-900 text-white">

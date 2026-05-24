@@ -1,4 +1,6 @@
-export const SITE_URL = "https://costorealdolar.com";
+export const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ??
+  "https://costorealdolar.com";
 
 export const CONTACT_EMAIL = "contact@costorealdolar.com";
 

@@ -1,13 +1,13 @@
 "use client";
 
-import { Suspense, useEffect, useMemo, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 import { DollarSelector } from "@/components/DollarSelector";
 import { ReceiptBreakdown } from "@/components/ReceiptBreakdown";
 import { SavingsCard } from "@/components/SavingsCard";
 import { ShareButton } from "@/components/ShareButton";
 import {
-  parseCalculatorSearchParams,
+  type CalculatorUrlParams,
+  parseCalculatorUrlParams,
   syncCalculatorUrl,
 } from "@/lib/calculatorUrl";
 import { formatARS } from "@/lib/format";
@@ -22,44 +22,60 @@ export interface DollarCalculatorProps {
   initialPurchaseType?: PurchaseType;
   initialExchangeType?: ExchangeType;
   documentTitleBase?: string;
+  /** Server-parsed query params — avoids client Suspense for first paint */
+  initialAmountFromUrl?: string;
+  initialPurchaseTypeFromUrl?: string;
+  initialExchangeTypeFromUrl?: string;
 }
 
-function CalculatorSkeleton() {
-  return (
-    <section
-      aria-label="Cargando calculadora"
-      className="animate-pulse space-y-8"
-    >
-      <div className="h-16 rounded-2xl bg-zinc-200" />
-      <div className="h-24 rounded-xl bg-zinc-200" />
-      <div className="h-48 rounded-2xl bg-zinc-200" />
-    </section>
-  );
+function resolveInitialState(props: DollarCalculatorProps) {
+  const defaultAmount =
+    props.initialAmount != null && props.initialAmount > 0
+      ? String(props.initialAmount)
+      : "";
+
+  const urlParams: CalculatorUrlParams | undefined =
+    props.initialAmountFromUrl != null ||
+    props.initialPurchaseTypeFromUrl != null ||
+    props.initialExchangeTypeFromUrl != null
+      ? {
+          amt: props.initialAmountFromUrl,
+          pt: props.initialPurchaseTypeFromUrl,
+          et: props.initialExchangeTypeFromUrl,
+        }
+      : undefined;
+
+  return parseCalculatorUrlParams(urlParams, {
+    amount: defaultAmount,
+    purchaseType: props.initialPurchaseType ?? "card",
+    exchangeType: props.initialExchangeType ?? "tarjeta",
+  });
 }
 
-function DollarCalculatorInner({
+export function DollarCalculator({
   initialAmount,
   initialPurchaseType = "card",
   initialExchangeType = "tarjeta",
   documentTitleBase = DEFAULT_BASE_TITLE,
-}: DollarCalculatorProps) {
-  const searchParams = useSearchParams();
-
-  const defaultAmount =
-    initialAmount != null && initialAmount > 0 ? String(initialAmount) : "";
-
-  const parsed = parseCalculatorSearchParams(searchParams, {
-    amount: defaultAmount,
-    purchaseType: initialPurchaseType,
-    exchangeType: initialExchangeType,
+  initialAmountFromUrl,
+  initialPurchaseTypeFromUrl,
+  initialExchangeTypeFromUrl,
+}: DollarCalculatorProps = {}) {
+  const initial = resolveInitialState({
+    initialAmount,
+    initialPurchaseType,
+    initialExchangeType,
+    initialAmountFromUrl,
+    initialPurchaseTypeFromUrl,
+    initialExchangeTypeFromUrl,
   });
 
-  const [amountInput, setAmountInput] = useState(parsed.amount);
+  const [amountInput, setAmountInput] = useState(initial.amount);
   const [purchaseType, setPurchaseType] = useState<PurchaseType>(
-    parsed.purchaseType,
+    initial.purchaseType,
   );
   const [exchangeType, setExchangeType] = useState<ExchangeType>(
-    parsed.exchangeType,
+    initial.exchangeType,
   );
 
   const usdAmount = useMemo(() => {
@@ -151,13 +167,5 @@ function DollarCalculatorInner({
 
       <ReceiptBreakdown result={result} usdAmount={usdAmount} />
     </section>
-  );
-}
-
-export function DollarCalculator(props: DollarCalculatorProps = {}) {
-  return (
-    <Suspense fallback={<CalculatorSkeleton />}>
-      <DollarCalculatorInner {...props} />
-    </Suspense>
   );
 }
