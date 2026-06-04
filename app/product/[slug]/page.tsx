@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { DollarCalculator } from "@/components/DollarCalculator";
 import { InfoBanner } from "@/components/InfoBanner";
@@ -12,16 +13,18 @@ import {
   getProductBySlug,
 } from "@/constants/products";
 import { buildProductComparison } from "@/lib/productComparison";
-import type { CalculatorUrlParams } from "@/lib/calculatorUrl";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<CalculatorUrlParams>;
 };
 
 export function generateStaticParams() {
   return getAllProductSlugs().map((slug) => ({ slug }));
 }
+
+// Pre-renders all 10 known product slugs at build time as static HTML.
+// Unknown future slugs are served via server-render on demand.
+export const dynamicParams = true;
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
@@ -50,9 +53,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-export default async function ProductPage({ params, searchParams }: PageProps) {
+export default async function ProductPage({ params }: PageProps) {
   const { slug } = await params;
-  const urlParams = await searchParams;
   const product = getProductBySlug(slug);
 
   if (!product) {
@@ -88,15 +90,14 @@ export default async function ProductPage({ params, searchParams }: PageProps) {
           <div className="mt-8 space-y-8">
             <ProductComparison product={product} comparison={comparison} />
 
-            <DollarCalculator
-              initialAmount={product.basePriceUSD}
-              initialPurchaseType={product.purchaseType}
-              initialExchangeType="tarjeta"
-              documentTitleBase={pageTitle}
-              initialAmountFromUrl={urlParams.amt}
-              initialPurchaseTypeFromUrl={urlParams.pt}
-              initialExchangeTypeFromUrl={urlParams.et}
-            />
+            <Suspense>
+              <DollarCalculator
+                initialAmount={product.basePriceUSD}
+                initialPurchaseType={product.purchaseType}
+                initialExchangeType="tarjeta"
+                documentTitleBase={pageTitle}
+              />
+            </Suspense>
           </div>
 
           <ProductLinks currentSlug={product.slug} />

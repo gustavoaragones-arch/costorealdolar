@@ -1,13 +1,13 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { DollarSelector } from "@/components/DollarSelector";
 import { ReceiptBreakdown } from "@/components/ReceiptBreakdown";
 import { SavingsCard } from "@/components/SavingsCard";
 import { ShareButton } from "@/components/ShareButton";
 import {
-  type CalculatorUrlParams,
-  parseCalculatorUrlParams,
+  parseCalculatorSearchParams,
   syncCalculatorUrl,
 } from "@/lib/calculatorUrl";
 import { formatARS } from "@/lib/format";
@@ -22,34 +22,6 @@ export interface DollarCalculatorProps {
   initialPurchaseType?: PurchaseType;
   initialExchangeType?: ExchangeType;
   documentTitleBase?: string;
-  /** Server-parsed query params — avoids client Suspense for first paint */
-  initialAmountFromUrl?: string;
-  initialPurchaseTypeFromUrl?: string;
-  initialExchangeTypeFromUrl?: string;
-}
-
-function resolveInitialState(props: DollarCalculatorProps) {
-  const defaultAmount =
-    props.initialAmount != null && props.initialAmount > 0
-      ? String(props.initialAmount)
-      : "";
-
-  const urlParams: CalculatorUrlParams | undefined =
-    props.initialAmountFromUrl != null ||
-    props.initialPurchaseTypeFromUrl != null ||
-    props.initialExchangeTypeFromUrl != null
-      ? {
-          amt: props.initialAmountFromUrl,
-          pt: props.initialPurchaseTypeFromUrl,
-          et: props.initialExchangeTypeFromUrl,
-        }
-      : undefined;
-
-  return parseCalculatorUrlParams(urlParams, {
-    amount: defaultAmount,
-    purchaseType: props.initialPurchaseType ?? "card",
-    exchangeType: props.initialExchangeType ?? "tarjeta",
-  });
 }
 
 export function DollarCalculator({
@@ -57,18 +29,26 @@ export function DollarCalculator({
   initialPurchaseType = "card",
   initialExchangeType = "tarjeta",
   documentTitleBase = DEFAULT_BASE_TITLE,
-  initialAmountFromUrl,
-  initialPurchaseTypeFromUrl,
-  initialExchangeTypeFromUrl,
 }: DollarCalculatorProps = {}) {
-  const initial = resolveInitialState({
-    initialAmount,
-    initialPurchaseType,
-    initialExchangeType,
-    initialAmountFromUrl,
-    initialPurchaseTypeFromUrl,
-    initialExchangeTypeFromUrl,
-  });
+  // Read URL params client-side. Keeping this in the client component (rather
+  // than reading searchParams in the Server Component) is what allows the
+  // parent server pages to be statically pre-rendered by generateStaticParams.
+  const searchParams = useSearchParams();
+
+  const initial = useMemo(
+    () =>
+      parseCalculatorSearchParams(searchParams, {
+        amount:
+          initialAmount != null && initialAmount > 0
+            ? String(initialAmount)
+            : "",
+        purchaseType: initialPurchaseType,
+        exchangeType: initialExchangeType,
+      }),
+    // Intentionally run only on mount — searchParams is the live object.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
 
   const [amountInput, setAmountInput] = useState(initial.amount);
   const [purchaseType, setPurchaseType] = useState<PurchaseType>(
