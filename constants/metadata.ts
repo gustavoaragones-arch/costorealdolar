@@ -29,12 +29,16 @@ export function buildPageMetadata({
   description?: string;
   canonicalPath: string;
 }): Metadata {
-  const canonicalUrl = `${SITE_URL}${canonicalPath}`;
+  // For the homepage "/" we use SITE_URL directly (no trailing slash) so the
+  // canonical tag and the sitemap entry are byte-for-byte identical.
+  // For all other paths we append the path to SITE_URL.
+  const canonicalUrl =
+    canonicalPath === "/" ? SITE_URL : `${SITE_URL}${canonicalPath}`;
 
   return {
     title,
     description,
-    alternates: { canonical: canonicalPath },
+    alternates: { canonical: canonicalUrl },
     openGraph: {
       title,
       description,
