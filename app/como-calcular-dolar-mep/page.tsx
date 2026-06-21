@@ -45,25 +45,6 @@ const ARTICLE_JSONLD = {
 };
 
 // ---------------------------------------------------------------------------
-// Placeholder helper — makes scaffolded copy easy to spot and replace
-// ---------------------------------------------------------------------------
-function Placeholder({ id }: { id: string }) {
-  return (
-    <p
-      data-placeholder={id}
-      className="italic text-zinc-400"
-      aria-label="Contenido pendiente"
-    >
-      {/* TODO: reemplazar con el contenido final */}
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod
-      tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-      veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-      commodo consequat.
-    </p>
-  );
-}
-
-// ---------------------------------------------------------------------------
 // Page
 // ---------------------------------------------------------------------------
 export default function ComoCaclularDolarMepPage() {
@@ -120,8 +101,27 @@ export default function ComoCaclularDolarMepPage() {
               ¿Qué es el Dólar MEP?
             </h2>
             <div className="mt-4 space-y-4">
-              <Placeholder id="que-es-mep-p1" />
-              <Placeholder id="que-es-mep-p2" />
+              <p>
+                El <strong>Dólar MEP</strong> (Mercado Electrónico de Pagos),
+                también conocido como <strong>Dólar Bolsa</strong>, es una
+                cotización del dólar que se obtiene de forma completamente legal
+                a través del mercado de capitales argentino. No tiene nada de
+                "paralelo" ni de informal: es una operación regulada por la CNV
+                que cualquier persona puede hacer abriendo una cuenta en un
+                broker o ALyC (Agente de Liquidación y Compensación).
+              </p>
+              <p>
+                La gran ventaja del MEP es que su cotización está{" "}
+                <strong>mucho más cerca del valor real del dólar</strong> que el
+                dólar tarjeta. En mayo de 2026, mientras el dólar tarjeta sale
+                aproximadamente <strong>$1.839</strong> (oficial $1.415 + 30%
+                de percepciones), el MEP cotiza alrededor de{" "}
+                <strong>$1.414</strong>. Esa diferencia de casi $425 por dólar
+                es lo que te cuesta usar la tarjeta en lugar del MEP: en una
+                suscripción de USD 15 por mes, eso se traduce en más de{" "}
+                <strong>$6.000 ARS de más cada mes</strong>, solo por no usar
+                la vía correcta.
+              </p>
             </div>
           </section>
 
@@ -141,8 +141,28 @@ export default function ComoCaclularDolarMepPage() {
                   Dólar MEP = Precio AL30 (ARS) ÷ Precio AL30D (USD)
                 </p>
               </div>
-              <Placeholder id="formula-al30-p1" />
-              <Placeholder id="formula-al30-p2" />
+              <p>
+                El <strong>AL30</strong> es el bono soberano argentino "Bonar
+                2030". Cotiza en dos versiones: una en pesos (AL30) y otra en
+                dólares (AL30D, donde la "D" indica liquidación en dólares).
+                Como es el mismo bono, la relación entre ambos precios refleja
+                directamente a cuántos pesos equivale un dólar en ese mercado.
+                La operación concreta es:{" "}
+                <strong>comprás AL30 con pesos, esperás el período de
+                parqueo (actualmente 1 día hábil) y lo vendés como AL30D
+                cobrando en dólares</strong>. El tipo de cambio implícito que
+                obtenés es el Dólar MEP.
+              </p>
+              <p>
+                <strong>Ejemplo práctico:</strong> Si el AL30 cotiza a $13.830
+                ARS y el AL30D cotiza a $9,77 USD, el MEP sería $13.830 ÷ 9,77
+                ≈ <strong>$1.415 por dólar</strong>. Ese cálculo lo hacen
+                automáticamente los brokers: vos simplemente transferís pesos,
+                operás el bono, y en 24–48 horas tenés los dólares acreditados
+                en tu cuenta comitente. No hace falta saber de finanzas para
+                hacerlo; la mayoría de las apps de inversión lo tienen como un
+                flujo guiado.
+              </p>
             </div>
           </section>
 
@@ -155,8 +175,32 @@ export default function ComoCaclularDolarMepPage() {
               ¿Por qué varían los precios?
             </h2>
             <div className="mt-4 space-y-4">
-              <Placeholder id="varian-p1" />
-              <Placeholder id="varian-p2" />
+              <p>
+                Los bonos AL30 y AL30D se negocian en tiempo real durante el
+                horario bursátil (10:00 a 17:00 hs). Como cualquier activo
+                financiero, sus precios fluctúan según la oferta y la demanda
+                del momento. Eso significa que el MEP no es un valor fijo
+                —puede cambiar varios pesos a lo largo del día dependiendo de
+                cuánta gente esté comprando o vendiendo ese bono en particular.
+                En la práctica, la variación intradía suele ser de{" "}
+                <strong>$5 a $20</strong>, lo que es marginal frente al ahorro
+                que generás versus el dólar tarjeta.
+              </p>
+              <p>
+                Otros factores que mueven el MEP son el{" "}
+                <strong>riesgo país</strong> (afecta el precio de todos los
+                bonos soberanos), las <strong>expectativas de inflación</strong>{" "}
+                y las <strong>regulaciones del BCRA</strong>. Por ejemplo, si el
+                banco central interviene vendiendo bonos para contener la
+                cotización, el MEP puede bajar transitoriamente. Por el
+                contrario, en momentos de incertidumbre política o económica,
+                la demanda de dólares empuja el MEP al alza. Para decisiones de
+                consumo cotidiano —suscripciones, compras online, servicios del
+                exterior— estas variaciones no son críticas: lo importante es
+                que, en cualquier escenario razonable, el MEP <em>siempre</em>{" "}
+                va a ser más barato que el dólar tarjeta mientras exista el 30%
+                de percepciones sobre consumos en el exterior.
+              </p>
             </div>
           </section>
 

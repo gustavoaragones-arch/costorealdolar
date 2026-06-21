@@ -65,8 +65,7 @@ const FAQ_JSONLD = {
       name: "¿Cuánto cuesta Netflix con dólares en Argentina?",
       acceptedAnswer: {
         "@type": "Answer",
-        // Placeholder — fill in with the current price when available.
-        text: "El precio de Netflix en Argentina varía según el plan. Calculá el costo final en pesos usando nuestra calculadora de dólar tarjeta, que incluye el 30% de percepciones vigente en 2026.",
+        text: "En 2026, Netflix en Argentina cobra en dólares y tu banco convierte el monto al dólar tarjeta: tipo de cambio oficial ($1.415) más el 30% de percepciones (RG 5617). El Impuesto PAIS está en 0% desde enero 2026. El plan Básico (USD 7) cuesta aproximadamente $12.877 ARS finales; el Estándar (USD 15,49) aproximadamente $28.493 ARS; y el Premium (USD 22,99) aproximadamente $42.291 ARS. Si pagás con dólar MEP en lugar de tarjeta, podés ahorrar hasta un 23% en cada cobro mensual.",
       },
     },
   ],
@@ -235,10 +234,13 @@ export default function NetflixPage() {
                   ¿Cuánto cuesta Netflix con dólares en Argentina?
                 </h3>
                 <p className="mt-2 text-sm leading-relaxed text-zinc-600">
-                  {/* Placeholder — fill in with current price when available. */}
-                  El precio de Netflix en Argentina varía según el plan. Calculá
-                  el costo final en pesos usando la calculadora de arriba, que
-                  incluye el 30% de percepciones vigente en 2026.
+                  En 2026, Netflix factura en dólares y tu banco convierte al{" "}
+                  <strong>dólar tarjeta</strong>: tipo oficial ($1.415) más el{" "}
+                  <strong>30% de percepciones</strong> (RG 5617). El Impuesto
+                  PAIS es 0% desde enero 2026. Los precios finales aproximados
+                  son: <strong>Básico (USD 7) → $12.877 ARS</strong>, Estándar
+                  (USD 15,49) → $28.493 ARS, Premium (USD 22,99) → $42.291 ARS.
+                  Con dólar MEP podés pagar hasta un 23% menos por mes.
                 </p>
               </div>
             </div>
