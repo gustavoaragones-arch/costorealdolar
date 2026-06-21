@@ -14,9 +14,9 @@ const MONTHS_ES = [
 ] as const;
 
 /**
- * Returns the month and year in Argentine Spanish (e.g. "Junio 2026").
- * Defaults to the current date, which at SSG build time is the deploy date —
- * giving each new deploy a freshness signal in the meta title and UI.
+ * Returns the month and year in Argentine Spanish (e.g. "Mayo 2026").
+ * Pass `new Date(taxRules.updatedAt)` to reflect the actual data validity
+ * date rather than the Vercel deploy date.
  */
 export function getMonthYear(date: Date = new Date()): string {
   return `${MONTHS_ES[date.getMonth()]} ${date.getFullYear()}`;

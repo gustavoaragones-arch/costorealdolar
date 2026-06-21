@@ -6,15 +6,16 @@ import { InfoBanner } from "@/components/InfoBanner";
 import { JsonLd } from "@/components/JsonLd";
 import { ProductLinks } from "@/components/ProductLinks";
 import { buildPageMetadata } from "@/constants/metadata";
+import { taxRules } from "@/constants/taxRules";
 import { getMonthYear } from "@/lib/freshness";
 
 const META_DESCRIPTION =
   "Ingresá el monto de tu compra en dólares y calculá el costo real en pesos con nuestra calculadora de dólar tarjeta. Incluye todos los impuestos actualizados.";
 
-// generateMetadata keeps SSG intact: new Date() is evaluated at build time,
-// so the month/year is baked into the static HTML on every deploy.
+// generateMetadata keeps SSG intact. Using taxRules.updatedAt (not new Date())
+// means the freshness label reflects actual data validity, not the deploy date.
 export async function generateMetadata(): Promise<Metadata> {
-  const monthYear = getMonthYear();
+  const monthYear = getMonthYear(new Date(taxRules.updatedAt));
 
   return {
     ...buildPageMetadata({
@@ -36,7 +37,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default function Home() {
-  const monthYear = getMonthYear();
+  const monthYear = getMonthYear(new Date(taxRules.updatedAt));
 
   return (
     <>
